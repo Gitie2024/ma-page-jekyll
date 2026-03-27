@@ -1,6 +1,6 @@
 title: Mon Super Blog
 description: Un site généré avec Jekyll et GitHub
-theme: minima
+theme: jekyll-theme-architect
 ### Une illustration de Jekyll
 
 ![Ma Journée de travail]({{ site.baseurl }}/assets/images/Journée de travail.png)
