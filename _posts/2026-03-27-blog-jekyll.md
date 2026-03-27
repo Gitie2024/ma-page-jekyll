@@ -22,5 +22,5 @@ Tout est statique. Cela signifie que le site est extrêmement sécurisé (diffic
 *Ceci est mon tout premier article généré automatiquement !*
 ### Une illustration de Jekyll
 
-![Infographie]({{ site.baseurl }}/assets/images/infographie.png)
-*Voici à quoi ressemble Jekyll !*
+![Infographie]({{ site.baseurl }}/assets/images/Infographie.png)
+ *Voici à quoi ressemble Jekyll !*
