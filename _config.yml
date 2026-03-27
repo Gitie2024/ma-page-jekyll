@@ -1,4 +1,4 @@
 title: Mon Super Blog Jekyll
 description: Un site généré avec Jekyll et GitHub
-theme: jekyll-theme-architect
+theme: theme-architect
 baseurl: "/ma-page-jekyll"
