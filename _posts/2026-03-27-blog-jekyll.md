@@ -17,6 +17,9 @@ Comme Jekyll est le moteur officiel de **GitHub Pages**, le déploiement est aut
 
 ### 3. Pas de base de données
 Tout est statique. Cela signifie que le site est extrêmement sécurisé (difficile de pirater ce qui n'est que du texte !) et qu'il se charge à la vitesse de l'éclair.
+### Une illustration de Jekyll
 
+![Gestionnaire de stock]({{ site.baseurl }}/assets/images/Infographie.png)
+*Voici à quoi ressemble cette infographie !*
 ---
 *Ceci est mon tout premier article généré automatiquement !*
