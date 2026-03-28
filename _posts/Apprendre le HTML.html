@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apprendre HTML - Tutoriel Interactif</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .code-block {
+            background-color: #1e293b;
+            color: #e2e8f0;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            font-family: monospace;
+            white-space: pre-wrap;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+        #preview-container {
+            border: 2px dashed #3b82f6;
+            min-height: 200px;
+            padding: 1rem;
+            background-color: white;
+            border-radius: 0.5rem;
+        }
+        .form-style {
+            max-width: 400px;
+        }
+        .form-style input, .form-style textarea, .form-style select {
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body class="bg-blue-50 min-h-screen">
+    <header class="bg-blue-800 text-white shadow-lg">
+        <div class="container mx-auto px-4 py-6">
+            <h1 class="text-3xl font-bold">Apprendre HTML</h1>
+            <p class="text-blue-200">Tutoriel interactif pour débutants</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div class="lg:col-span-2 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold text-blue-800 mb-4">Ajouter un élément à votre site</h2>
+                
+                <div class="mb-6">
+                    <label for="element-select" class="block text-sm font-medium text-gray-700 mb-2">Choisissez un élément HTML :</label>
+                    <select id="element-select" class="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
+                        <option value="heading">Titre (h1, h2, etc.)</option>
+                        <option value="paragraph">Paragraphe</option>
+                        <option value="image">Image</option>
+                        <option value="link">Lien</option>
+                        <option value="list">Liste</option>
+                        <option value="table">Tableau</option>
+                        <option value="form">Formulaire</option>
+                    </select>
+                </div>
+
+                <div id="element-options" class="space-y-4">
+                    <!-- Les options spécifiques à chaque élément seront injectées ici -->
+                </div>
+
+                <div class="mt-6">
+                    <h3 class="text-lg font-medium text-blue-800 mb-2">Code HTML généré :</h3>
+                    <div id="generated-code" class="code-block">
+                        <!-- Le code généré apparaîtra ici -->
+                    </div>
+                    <button id="copy-btn" class="mt-2 px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition">
+                        Copier le code
+                    </button>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-2xl font-semibold text-blue-800 mb-4">Visualisation en direct</h2>
+                <div id="preview-container">
+                    <p class="text-gray-500">Le rendu de votre élément HTML apparaîtra ici</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Configuration complète des éléments HTML
+        const elements = {
+            heading: {
+                name: "Titre",
+                options: [
+                    {
+                        name: "Niveau",
+                        type: "select",
+                        options: ["h1", "h2", "h3", "h4", "h5", "h6"],
+                        default: "h1"
+                    },
+                    {
+                        name: "Texte",
+                        type: "text",
+                        default: "Mon Titre"
+                    }
+                ],
+                generateCode: (values) => {
+                    const classes = {
+                        h1: "text-3xl font-bold text-gray-900",
+                        h2: "text-2xl font-bold text-gray-800",
+                        h3: "text-xl font-semibold text-gray-800",
+                        h4: "text-lg font-semibold text-gray-700",
+                        h5: "text-base font-medium text-gray-700",
+                        h6: "text-sm font-medium text-gray-600"
+                    };
+                    return `<${values[0]} class="${classes[values[0]]}">${values[1]}</${values[0]}>`;
+                }
+            },
+            paragraph: {
+                name: "Paragraphe",
+                options: [
+                    {
+                        name: "Texte",
+                        type: "textarea",
+                        default: "Ceci est un paragraphe de texte. Vous pouvez le modifier comme vous le souhaitez."
+                    }
+                ],
+                generateCode: (values) => {
+                    return `<p class="text-gray-700 mb-4">${values[0]}</p>`;
+                }
+            },
+            image: {
+                name: "Image",
+                options: [
+                    {
+                        name: "URL de l'image",
+                        type: "text",
+                        default: "https://via.placeholder.com/400x300"
+                    },
+                    {
+                        name: "Texte alternatif",
+                        type: "text",
+                        default: "Description de l'image"
+                    },
+                    {
+                        name: "Largeur",
+                        type: "select",
+                        options: ["Automatique", "200px", "300px", "400px", "100%"],
+                        default: "Automatique"
+                    }
+                ],
+                generateCode: (values) => {
+                    const widthClass = values[2] === "Automatique" ? "" : 
+                                     values[2] === "100%" ? "w-full" : `w-[${values[2]}]`;
+                    return `<img src="${values[0]}" alt="${values[1]}" class="rounded-lg shadow-md ${widthClass}">`;
+                }
+            },
+            link: {
+                name: "Lien",
+                options: [
+                    {
+                        name: "Texte du lien",
+                        type: "text",
+                        default: "Cliquez ici"
+                    },
+                    {
+                        name: "URL de destination",
+                        type: "text",
+                        default: "https://www.example.com"
+                    },
+                    {
+                        name: "Ouvrir dans un nouvel onglet",
+                        type: "checkbox",
+                        default: false
+                    }
+                ],
+                generateCode: (values) => {
+                    const target = values[2] ? ' target="_blank"' : '';
+                    return `<a href="${values[1]}" class="text-blue-600 hover:text-blue-800 underline"${target}>${values[0]}</a>`;
+                }
+            },
+            list: {
+                name: "Liste",
+                options: [
+                    {
+                        name: "Type de liste",
+                        type: "select",
+                        options: ["ul", "ol"],
+                        default: "ul"
+                    },
+                    {
+                        name: "Éléments (un par ligne)",
+                        type: "textarea",
+                        default: "Premier élément\nDeuxième élément\nTroisième élément"
+                    }
+                ],
+                generateCode: (values) => {
+                    const listType = values[0];
+                    const items = values[1].split('\n').filter(item => item.trim() !== '');
+                    const listClass = listType === 'ul' ? 'list-disc list-inside' : 'list-decimal list-inside';
+                    const itemsHTML = items.map(item => `  <li class="mb-1">${item.trim()}</li>`).join('\n');
+                    return `<${listType} class="${listClass} text-gray-700 space-y-1">\n${itemsHTML}\n</${listType}>`;
+                }
+            },
+            table: {
+                name: "Tableau",
+                options: [
+                    {
+                        name: "En-têtes (séparés par |)",
+                        type: "text",
+                        default: "Nom | Âge | Ville"
+                    },
+                    {
+                        name: "Lignes (une ligne par rangée, colonnes séparées par |)",
+                        type: "textarea",
+                        default: "Jean | 25 | Paris\nMarie | 30 | Lyon\nPierre | 28 | Marseille"
+                    }
+                ],
+                generateCode: (values) => {
+                    const headers = values[0].split('|').map(h => h.trim());
+                    const rows = values[1].split('\n').filter(row => row.trim() !== '')
+                                          .map(row => row.split('|').map(cell => cell.trim()));
+                    
+                    const headerHTML = headers.map(h => `    <th class="px-4 py-2 text-left font-semibold text-gray-900 border-b">${h}</th>`).join('\n');
+                    const rowsHTML = rows.map(row => 
+                        '  <tr>\n' + 
+                        row.map(cell => `    <td class="px-4 py-2 text-gray-700 border-b">${cell}</td>`).join('\n') + 
+                        '\n  </tr>'
+                    ).join('\n');
+                    
+                    return `<table class="min-w-full bg-white border border-gray-300 rounded-lg overflow-hidden">\n  <thead class="bg-gray-50">\n  <tr>\n${headerHTML}\n  </tr>\n  </thead>\n  <tbody>\n${rowsHTML}\n  </tbody>\n</table>`;
+                }
+            },
+            form: {
+                name: "Formulaire",
+                options: [
+                    {
+                        name: "Titre du formulaire",
+                        type: "text",
+                        default: "Contactez-nous"
+                    },
+                    {
+                        name: "Champs (un par ligne : type:nom:placeholder)",
+                        type: "textarea",
+                        default: "text:nom:Votre nom\nemail:email:votre.email@example.com\ntextarea:message:Votre message"
+                    },
+                    {
+                        name: "Texte du bouton",
+                        type: "text",
+                        default: "Envoyer"
+                    }
+                ],
+                generateCode: (values) => {
+                    const title = values[0];
+                    const fields = values[1].split('\n').filter(field => field.trim() !== '');
+                    const buttonText = values[2];
+                    
+                    const fieldsHTML = fields.map(field => {
+                        const [type, name, placeholder] = field.split(':').map(f => f.trim());
+                        if (type === 'textarea') {
+                            return `  <div class="mb-4">
+    <label for="${name}" class="block text-sm font-medium text-gray-700 mb-2">${placeholder}</label>
+    <textarea id="${name}" name="${name}" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="${placeholder}"></textarea>
+  </div>`;
+                        } else {
+                            return `  <div class="mb-4">
+    <label for="${name}" class="block text-sm font-medium text-gray-700 mb-2">${placeholder}</label>
+    <input type="${type}" id="${name}" name="${name}" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" placeholder="${placeholder}">
+  </div>`;
+                        }
+                    }).join('\n');
+                    
+                    return `<form class="form-style bg-gray-50 p-6 rounded-lg">
+  <h3 class="text-lg font-semibold text-gray-900 mb-4">${title}</h3>
+${fieldsHTML}
+  <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition">${buttonText}</button>
+</form>`;
+                }
+            }
+        };
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            const elementSelect = document.getElementById('element-select');
+            const elementOptions = document.getElementById('element-options');
+            const generatedCode = document.getElementById('generated-code');
+            const previewContainer = document.getElementById('preview-container');
+            const copyBtn = document.getElementById('copy-btn');
+
+            // Mettre à jour les options quand l'élément change
+            elementSelect.addEventListener('change', updateElementOptions);
+            updateElementOptions();
+
+            function updateElementOptions() {
+                const selectedElement = elementSelect.value;
+                const element = elements[selectedElement];
+                
+                if (!element) {
+                    console.error('Élément non trouvé:', selectedElement);
+                    return;
+                }
+                
+                // Vider les options actuelles
+                elementOptions.innerHTML = '';
+                
+                // Ajouter les nouvelles options
+                element.options.forEach((option, index) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'space-y-1';
+                    
+                    const label = document.createElement('label');
+                    label.className = 'block text-sm font-medium text-gray-700';
+                    label.textContent = option.name;
+                    optionDiv.appendChild(label);
+                    
+                    let input;
+                    if (option.type === 'select') {
+                        input = document.createElement('select');
+                        input.className = 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500';
+                        option.options.forEach(opt => {
+                            const optionEl = document.createElement('option');
+                            optionEl.value = opt;
+                            optionEl.textContent = opt;
+                            input.appendChild(optionEl);
+                        });
+                        input.value = option.default;
+                    } else if (option.type === 'textarea') {
+                        input = document.createElement('textarea');
+                        input.className = 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500';
+                        input.rows = 3;
+                        input.value = option.default;
+                    } else if (option.type === 'checkbox') {
+                        input = document.createElement('input');
+                        input.type = 'checkbox';
+                        input.className = 'h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded';
+                        input.checked = option.default;
+                    } else {
+                        input = document.createElement('input');
+                        input.type = option.type || 'text';
+                        input.className = 'w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500';
+                        input.value = option.default;
+                    }
+                    
+                    input.dataset.optionIndex = index;
+                    input.addEventListener('input', updateCodeAndPreview);
+                    input.addEventListener('change', updateCodeAndPreview); // Pour les checkboxes
+                    optionDiv.appendChild(input);
+                    
+                    elementOptions.appendChild(optionDiv);
+                });
+                
+                updateCodeAndPreview();
+            }
+
+            function updateCodeAndPreview() {
+                const selectedElement = elementSelect.value;
+                const element = elements[selectedElement];
+                
+                if (!element) return;
+                
+                // Récupérer les valeurs des options
+                const values = [];
+                const inputs = elementOptions.querySelectorAll('input, select, textarea');
+                inputs.forEach(input => {
+                    if (input.type === 'checkbox') {
+                        values.push(input.checked);
+                    } else {
+                        values.push(input.value);
+                    }
+                });
+                
+                // Générer le code
+                const code = element.generateCode(values);
+                generatedCode.textContent = code;
+                
+                // Mettre à jour l'aperçu
+                previewContainer.innerHTML = code;
+            }
+
+            // Copier le code
+            copyBtn.addEventListener('click', function() {
+                const code = generatedCode.textContent;
+                if (navigator.clipboard) {
+                    navigator.clipboard.writeText(code).then(() => {
+                        showCopyFeedback();
+                    }).catch(err => {
+                        console.error('Erreur lors de la copie:', err);
+                        fallbackCopy(code);
+                    });
+                } else {
+                    fallbackCopy(code);
+                }
+            });
+
+            function fallbackCopy(text) {
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showCopyFeedback();
+                } catch (err) {
+                    console.error('Fallback copy failed:', err);
+                }
+                document.body.removeChild(textArea);
+            }
+
+            function showCopyFeedback() {
+                const originalText = copyBtn.textContent;
+                copyBtn.textContent = 'Copié !';
+                copyBtn.className = copyBtn.className.replace('bg-blue-600 hover:bg-blue-700', 'bg-green-600 hover:bg-green-700');
+                setTimeout(() => {
+                    copyBtn.textContent = originalText;
+                    copyBtn.className = copyBtn.className.replace('bg-green-600 hover:bg-green-700', 'bg-blue-600 hover:bg-blue-700');
+                }, 2000);
+            }
+        });
+    </script>
+</body>
+</html>
